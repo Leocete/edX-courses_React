@@ -1,0 +1,166 @@
+const questions = [
+  {
+   question: 'What is 8 X 2?',
+   options: [5, 16, 12, 18],
+   answer: 16 
+  },
+  {
+   question: 'What is 18 / 3?',
+   options: [6, 10, 7, 5],
+   answer: 6 
+  },
+  {
+   question: 'What is 3 X 2?',
+   options: [5, 16, 6, 10],
+   answer: 6 
+  },
+  {
+   question: 'What is 5 X 0?',
+   options: [0, 5, 10, 6],
+   answer: 0 
+  },
+  {
+   question: 'What is 11 X 11?',
+   options: [121, 144, 112, 120],
+   answer: 121 
+  },
+  {
+   question: 'What is 12 X 6?',
+   options: [68, 82, 72, 56],
+   answer: 72 
+  },
+  {
+   question: 'What is 89 X 2?',
+   options: [186, 192, 178, 155],
+   answer: 178 
+  },
+  {
+   question: 'What is 56 / 2?',
+   options: [18, 32, 26, 28],
+   answer: 28 
+  },
+  {
+   question: 'What is 8 X 3?',
+   options: [32, 18, 24, 21],
+   answer: 24 
+  },
+  {
+   question: 'What is 9 X 8?',
+   options: [81, 72, 64, 68],
+   answer: 72 
+  }
+]
+
+function Question(props){
+  return (
+    <div>
+      <h2 className='question'>{props.question}</h2>
+    </div>
+  );
+}
+
+function Option(props){
+  return (
+    <div>
+      <button className = 'btn btn-light btn-lg btn-block mb-2' type = 'button' onClick = {() => {props.onClick()} }>{props.option}</button>  
+    </div>
+  )
+}
+
+function Options(props){
+  const options = props.options.map ((option) => <Option key = {option} option = {option} onClick = {() => {props.onClick(option)}} />);
+  return (
+    <div>
+      {options}  
+    </div>
+  )
+}
+
+function AnswerResult(props){
+  return (
+    <div className = 'result row'>
+        <div className="col-md-6">
+          <div className="card bg-success text-light">
+            <div className="card-body">
+              <h6 className="card-title">Correct Answers</h6>
+              <h1>{props.correctAnswers}</h1>
+            </div>
+          </div>
+        </div>
+    <br/>
+        <div className="col-md-6">
+          <div className="card bg-danger text-light">
+            <div className="card-body">
+              <h6 className="card-title">Incorrect Answers</h6>
+              <h1>{props.incorrectAnswers}</h1>
+            </div>
+          </div>
+        </div> 
+    </div>
+  )
+}
+
+class TriviaApp extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      questions: questions,
+      correctAnswers: 0,
+      incorrectAnswers: 0,
+      questionNumber: 0
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  isGameFinished(){
+    return !this.state.questions[this.state.questionNumber];
+  }
+
+  handleClick(selectedOption){
+    const questionInfo = this.state.questions[this.state.questionNumber];
+
+    if (!this.isGameFinished()) {
+      let sumCorrect = 0;
+      let sumIncorrect = 0;
+      if (selectedOption === questionInfo.answer) {
+        sumCorrect++;
+      } else {
+        sumIncorrect++;
+      }
+      this.setState((prevState, props) => {
+        return {
+          questionNumber: prevState.questionNumber + 1,
+          correctAnswers: prevState.correctAnswers + sumCorrect,
+          incorrectAnswers: prevState.incorrectAnswers + sumIncorrect
+        }
+      });
+    }
+  }
+
+  render(){
+    let questionInfo;
+    const gameIsActive = !this.isGameFinished();
+    if (gameIsActive) {
+      questionInfo = this.state.questions[this.state.questionNumber];
+    } else {
+      questionInfo = this.state.questions[this.state.questions.length - 1];
+    }
+    return (
+        <div className='row'>
+          <div className='col-md-12 border rounded p-5 mt-1 text-center'>
+            <Question question = {questionInfo.question} />
+            <Options options = {questionInfo.options} onClick = {this.handleClick} />
+           </div>
+        {!gameIsActive && <div><h2>End of the game!</h2></div>}
+        <div className = 'col-md-12 border rounded ml-1 text-center p-5 mt-1'>  
+        <AnswerResult correctAnswers = {this.state.correctAnswers} incorrectAnswers = {this.state.incorrectAnswers} />
+        </div>     
+      </div>     
+    );
+  }
+}
+
+ReactDOM.render(
+    <TriviaApp />,
+    document.getElementById('root')
+)
