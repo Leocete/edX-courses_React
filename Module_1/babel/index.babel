@@ -1,0 +1,77 @@
+function MainTitle(props) {
+  return (
+    <div>
+      <h2>{props.title}</h2>
+      <p>{props.description}</p>  
+    </div>
+  )
+}
+
+function ChooseOptions(props) {
+   return (
+    <div class = "filterVehicles">
+      <input type="checkbox" id="newOnly" name="filter" value="newOnly"/>
+      <label for="newOnly">New Only</label><br></br>
+      <p>Select Type 
+      <select name="vehicles">
+        <option value="item1">{props.vehicleType[0]}</option>
+        <option value="item2">{props.vehicleType[1]}</option>
+        <option value="item3">{props.vehicleType[2]}</option>
+        <option value="item4">{props.vehicleType[3]}</option>
+      </select>
+      </p>  
+    </div>
+   )
+}
+
+function TableElement(props) {
+  return (
+    <div>
+      <table>
+        <tr>
+          <th>Year</th>
+          <th>Model</th> 
+          <th>Price</th>
+          <th>Buy</th>
+        </tr>
+        <tr>
+          <td>{props.parameters[0]}</td>
+          <td>{props.parameters[1]}</td>
+          <td>{props.parameters[2]}</td>
+          <td><button type="button">Buy Now</button></td>
+        </tr>  
+      </table>  
+    </div>
+  )
+}
+
+function TitleName(props) {
+  return <h2>Title</h2>
+}
+
+function CarApp(props) {
+  return (
+    <div class = "wrapper">
+      <MainTitle title = "Welcome to React Transportation" description = "The best place to buy vehicles online"/>
+      <ChooseOptions vehicleType = {["All", "Cars", "Trucks", "Convertibles"]}/>
+      <TitleName name = "Cars"/>
+      <TableElement parameters = {[2013, "A", "$32000"]}/>
+      <TableElement parameters = {[2011, "B", "$4400"]}/>
+      <TableElement parameters = {[2016, "B", "$15500"]}/>
+      <TitleName name = "Trucks"/>
+      <TableElement parameters = {[2014, "D", "$18000"]}/>
+      <TableElement parameters = {[2013, "E", "$5200"]}/>
+      <TitleName name = "Convertibles"/>
+      <TableElement parameters = {[2009, "F", "$2000"]}/>
+      <TableElement parameters = {[2010, "G", "$6000"]}/>
+      <TableElement parameters = {[2012, "H", "$12500"]}/>
+      <TableElement parameters = {[2017, "M", "$50000"]}/>
+    </div>  
+  )
+}
+
+
+ReactDOM.render(
+  <CarApp/>,
+  document.getElementById("root")
+)

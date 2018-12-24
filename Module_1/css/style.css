@@ -1,0 +1,45 @@
+* {
+  font-family: 'Niramit', sans-serif;
+}
+.wrapper {
+  max-width: 600px;
+  margin: auto;
+}
+
+.filterVehicles label {
+  float: left;
+}
+.filterVehicles select {
+ display: inline-block;
+ width: 100px; 
+ margin-left: 5px;  
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+table {
+  text-align: center;
+  border-collapse: collapse;
+}
+
+th {
+  width: 150px;
+  margin-top: 150px;
+  background: #ebebe0;
+}
+
+td {
+  width: 100px;
+}
+
+button {
+  margin: 10px 0;
+  border-radius: 5%;
+}
+
+button:hover {
+  background: #898989;
+  cursor: pointer;
+}
