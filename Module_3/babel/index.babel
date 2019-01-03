@@ -1,0 +1,169 @@
+// Lists of activities and restrictions
+const optionsList = ['Science Lab','Swimming','Cooking','Painting'];
+const checkList = [{id: 'a', text:'Dietary Restrictions'},
+                   {id: 'b', text:'Physical Disabilities'},
+                   {id: 'c', text:'Medical Needs'}]
+// First Name and LastName component
+function NameInput(props){
+  return (
+    <div className='form-group'>
+      <label>{props.label}</label>
+      <br/>
+      <input type ='text' name={props.name} className='form-control' value={props.value} onChange={props.handleChange} />
+    </div>
+  )
+}
+// List of activities componnt
+function SelectList(props) {
+  return (
+    <div className='my-1 mr-2'>
+      <label>{props.label}</label>
+      <br/>
+      <select className="custom-select mr-sm-2" name={props.name} value={props.value} onChange={props.handleChange}>
+        {props.optionsList.map( (item, index) =>
+            <option key={index} value = {item}> {item} </option>)}
+      </select>  
+    </div>
+  )
+}
+// CheckBox list component
+function CheckBox(props){
+   return (
+     <p className='form-check'>
+       <input className = 'form-check-input' type="checkbox" name={props.name} id=        {props.id} value={props.value} checked={props.checked} onChange={props.handleChange} />
+       <label className = 'form-check-label'>{props.value}) {props.label}</label>
+     </p>
+   )
+}
+// CheckbBoxList component
+function CheckBoxList(props){
+  return (
+    <div>
+      <label>{props.title}</label>
+      <ol>
+        {props.checkList.map((item,index) =>
+          <CheckBox 
+            key = {index}
+            id = {props.id+'_'+index}
+            name = {props.id}
+            value = {item.id}
+            checked = {(props.applyList.indexOf(item.id) < 0 ? false : true)}
+            label = {item.text}
+            handleChange = {props.handleChange}
+           />)
+         }
+      </ol>
+    </div>
+  )
+}
+// Remove button component
+function RemoveButton(props){
+  return (
+    <button onClick = {(e)=>{props.removeItem(props.index)}} ><i className='material-icons'>delete</i></button>
+  )
+}
+// Report element
+function ReportElem(props){
+  debugger;
+  return (
+    <tbody>
+    {props.reportList.map((item, index) => 
+      <tr key={index}>
+        <td><RemoveButton removeItem={props.removeItem} index={index}/></td>
+        <td>{item.firstName}</td> 
+        <td>{item.lastName}</td>
+        <td>{item.activity}</td>
+        <td>{item.apply}</td> 
+      </tr>
+    )}
+    </tbody>
+  )
+}
+// Report table
+function ReportTable(props){
+  return (
+    <table className='table'>
+      <thead className='thead-light'>
+        <tr>
+          <th scope='col'>Remove</th>
+          <th scope='col'>First Name</th>
+          <th scope='col'>Last Name</th>
+          <th scope='col'>Activity</th>
+          <th scope='col'>Restrictions</th>
+        </tr>
+      </thead>
+      <ReportElem removeItem={props.removeItem} reportList = {props.reportList} />
+    </table>
+  )
+}
+
+class App extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      firstName: '',
+      lastName: '',
+      activity: this.props.optionsList[0],
+      apply: [],
+      items: []
+    }
+  }
+  // Handle multiple inputs
+  handleChange(event){   
+    this.setState({[event.target.name]: event.target.value})
+  }
+  // Handle CheckList changes
+  handleChangeChk(event){
+    let itemsCopy = this.state.apply
+    if (event.target.checked){
+      itemsCopy.push(event.target.value)
+    } else {
+      console.log(itemsCopy.indexOf(event.target.value))
+      itemsCopy.splice(itemsCopy.indexOf(event.target.value), 1)
+    }
+    this.setState({apply: itemsCopy})
+  }
+  // Add new item to the report and refresh the initial state
+  addItem(){
+    let itemsCopy = JSON.parse(JSON.stringify(this.state.items)) 
+    itemsCopy.push({
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      activity: this.state.activity,
+      apply: this.state.apply.join(',')
+    })
+    this.setState({
+      firstName: '', 
+      lastName: '',
+      activity: this.props.optionsList[0],
+      apply: [],
+      items: itemsCopy
+    })
+  }
+
+  removeItem(index){
+    let itemsCopy = this.state.items.slice()
+        itemsCopy.splice(index,1);
+        this.setState({items:itemsCopy})
+    }
+  
+  
+  render(){
+    console.log(this.state);
+    return (
+      <div>
+        <NameInput label = 'First Name' value = {this.state.firstName} name="firstName" handleChange = {this.handleChange.bind(this)} />
+        <NameInput label = 'Last Name' value = {this.state.lastName} name="lastName" handleChange = {this.handleChange.bind(this)} />
+        <SelectList label = 'Select Activity' name="activity" optionsList={this.props.optionsList} value = {this.state.activity} handleChange = {this.handleChange.bind(this)} />
+        <CheckBoxList title = {'Check all that apply'} name="apply" checkList={this.props.checkList} applyList = {this.state.apply} handleChange = {this.handleChangeChk.bind(this)} />
+        <button className = 'btn btn-outline-primary' onClick = {() => this.addItem()}>Submit</button>
+        {this.state.items.length > 0 && <ReportTable removeItem={this.removeItem.bind(this)} reportList = {this.state.items} />}
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(
+   <App optionsList={optionsList} checkList={checkList}/>,
+    document.getElementById('root')
+)
